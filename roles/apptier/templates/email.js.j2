@@ -1,0 +1,116 @@
+console.log('Loading... ', __filename);
+
+var fs = require('fs');
+
+module.exports = {
+
+  // Email Templating settings
+  emailTemplateDirectories: {
+    templateDir: "{{ midas_template_dir }}",
+    layoutDir: "{{ midas_layout_dir }}"
+  },
+
+  // Email dispatch protocol (i.e. SMTP  or SES)
+  emailProtocol: "{{ midas_email_protocol }}",
+
+  // SMTP Mail settings -- uses Nodemailer
+  // See for more config options: https://github.com/andris9/Nodemailer#setting-up-smtp
+  smtp: {
+    // Specify to use a supported service; leave blank for SMTP
+    // See: https://github.com/andris9/Nodemailer#well-known-services-for-smtp
+{% if midas_smtp_service is defined %}
+    service             : "{{ midas_smtp_service }}",
+{% else %}
+    service             : "",
+{% endif %}
+    // remote SMTP host
+{% if midas_smtp_hostname is defined %}
+    host                : "{{ midas_smtp_hostname }}",
+{% else %}
+    host                : "",
+{% endif %}
+    // true to use SSL connections
+{% if midas_smtp_secure_connection is defined and midas_smtp_secure_connection %}
+    secureConnection    : true,
+{% else %}
+    secureConnection    : false,
+{% endif %}
+    // 25 (non-secure) or 465 (secure)
+    port                : {{ midas_smtp_port }},
+    // username and password settings for secure connections
+    auth                : {
+{% if midas_smtp_user is defined %}
+      user              : "{{ midas_smtp_user }}",
+{% else %}
+      user              : "",
+{% endif %}
+{% if midas_smtp_password is defined %}
+      pass              : "{{ midas_smtp_password }}"
+{% else %}
+      pass              : ""
+{% endif %}
+    },
+    // ignore server support for STARTTLS (defaults to false)
+{% if midas_smtp_ignore_tls is defined and midas_smtp_ignore_tls %}
+    ignoreTLS           : true,
+{% else %}
+    ignoreTLS           : false,
+{% endif %}
+    // output client and server messages to console
+{% if midas_smtp_debug is defined and midas_smtp_debug %}
+    debug               : true,
+{% else %}
+    debug               : false,
+{% endif %}
+    // limit the count of messages to send through a single connection (no limit by default)
+{% if midas_smtp_max_messages is defined %}
+    maxMessages         : {{ midas_smtp_max_messages }},
+{% endif %}
+    // how many connections to keep in the pool (defaults to 5)
+{% if midas_smtp_max_connections is defined %}
+    maxConnections      : {{ midas_smtp_max_connections }}
+{% else %}
+    maxConnections      : 5
+{% endif %}
+  },
+
+  // SES Mail settings -- uses Nodemailer
+  ses: {
+{% if aws_access_key is defined %}
+    AWSAccessKeyID: "{{ aws_access_key }}",
+{% endif %}
+{% if aws_secret_key is defined %}
+    AWSSecretKey: "{{ aws_secret_key }}",
+{% endif %}
+{% if midas_ses_url is defined %}
+    ServiceUrl: "{{ midas_ses_url }}"
+{% endif %}
+  },
+
+  // is DKIM signing enabled for Nodemailer transport?
+{% if midas_dkim_enabled is defined and midas_dkim_enabled %}
+  dkimEnabled: true,
+{% else %}
+  dkimEnabled: false,
+{% endif %}
+
+  // DKIM signing options for Nodemailer transport
+  dkim: {
+{% if midas_dkim_domain is defined %}
+    domainName: "{{ midas_dkim_domain }}",
+{% endif %}
+{% if midas_dkim_key_selector is defined %}
+    keySelector: "{{ midas_dkim_key_selector  }}",
+{% endif %}
+{% if midas_dkim_private_key is defined %}
+    privateKey: "{{ midas_dkim_private_key }}",
+{% endif %}
+{% if midas_dkim_header_field_names is defined %}
+    headerFieldNames: "{{ midas_dkim_header_field_names }}"
+{% endif %}
+  },
+
+  // system email address (from address)
+  systemEmail: "{{ midas_from_address }}"
+
+};

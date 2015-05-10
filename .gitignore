@@ -1,0 +1,14 @@
+# Patterns identifying files to exclude
+# from the git repository.
+
+# Skip files containing actual passwords or access keys.
+# All assumed to be named secrets.yml.
+# This skips them in the top-level directory and any subdirectory.
+secrets.yml
+
+# Skip all files associated with Vagrant instances.
+.vagrant
+
+# Ignore files associated with the Ansible roles loaded through requirements.yml
+roles/jdauphant.nginx
+roles/postgresql

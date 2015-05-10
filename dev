@@ -1,0 +1,18 @@
+# Development inventory file for Ansible.
+
+[vagrant]
+vagrant1 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222
+
+[appservers:children]
+vagrant
+
+[dbservers:children]
+vagrant
+
+[webservers:children]
+vagrant
+
+[dev:children]
+appservers
+dbservers
+webservers

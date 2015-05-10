@@ -1,0 +1,7 @@
+---
+- src: jdauphant.nginx
+  path: roles/
+  
+- src: https://github.com/katucker/ansible-postgresql
+  path: roles/
+  name: postgresql

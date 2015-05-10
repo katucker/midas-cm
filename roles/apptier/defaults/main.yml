@@ -1,0 +1,168 @@
+---
+# Default variable values for the apptier role.
+# These can be overridden by re-defining them in group or host variable files, or
+# by passing them as parameters to the role invocation in a higher level playbook.
+
+# Set to true to load a custom set of tags from a template in templates/tag.js.j2
+midas_set_tags: False
+
+# Set to true to have the internationalization module send translations
+# it can't find back to the server side.
+midas_i18n_send_missing: False
+
+# Whether to store translation strings on the client side. Useful for
+# production applications to cache translations locally.
+midas_i18n_use_local_storage: False
+
+# User interface configuration.
+# Whether to show projects, i.e. related groups of tasks, to the user.
+midas_show_project: True
+
+# The default path for the end of the URL when a user successfully logs in.
+# Goes along with the midas_show_project variable, because if you don't want to
+# show projects, you shouldn't show the projects page as the default.
+midas_logged_in_path: "/projects"
+
+# Whether to prompt for sending an e-mail notification to volunteer's supervisor.
+midas_email_supervisor: False
+
+# Whether to show a FAQ page and, if so, the path to that page.
+midas_show_faq: False
+midas_faq_path: "/faq"
+
+# Whether to provide a sign in dialog.
+midas_signin: True
+
+# Whether to support authentication local to the application.
+midas_local_auth_enabled: True
+
+midas_local_auth_expand: True
+
+midas_local_auth_allow_logout: True
+
+# Whether to show a link to terms and conditions for using the application, along
+# with the label and URL to use for them.
+midas_link_to_terms: False
+midas_terms_label: "Terms and Conditions"
+midas_terms_url: "https://18f.gsa.gov/"
+
+# Whether to allow users to edit their own profile from within midas.
+midas_profile_edit: True
+
+# URL to use when user elects to edit their profile.
+#midas_profile_edit_url:
+
+# Determines whether only the production node.JS modules are installed.
+# Set to False for a development configuration.
+midas_production: True
+
+# Define the user account under which the application is installed.
+# Defaults to the same account used by ansible to install everything else.
+# Change this to an account without sudo permission to increase security.
+midas_install_user: "{{ ansible_ssh_user }}"
+
+# Location of the git repository to clone during installation.
+# Override this with another git repository location to use a fork of the
+# master repository.
+midas_repo_url: https://github.com/18F/midas.git
+
+# Location above where the repository will reside once cloned.
+midas_dest_parent: "{{ ansible_env.HOME }}"
+
+# File system location where to clone the repository.
+midas_dest_folder: "{{ midas_dest_parent }}/midas"
+
+# Full path to a file in which the process ID is written when the application is running.
+midas_pid: "{{ midas_dest_folder }}/midas.pid"
+
+# Name to use for the application. Used to generate system messages.
+midas_system_name: midas
+
+# Directories in which templates are stored for constructing email messages.
+midas_template_dir: assets/email/templates
+midas_layout_dir: assets/email/layouts
+
+# Which e-mail protocol to use for sending messages from the application.
+# Either SMTP or SES (Amazon Simple Email Service)
+midas_email_protocol: SMTP
+
+# Use the 'midas_smtp_...' variables if using an SMTP protocol.
+# from the application.
+
+# Well-known (by Nodemailer) SMTP service provider to use.
+# Leave undefined for specifying individual SMTP parameters, below.
+# midas_smtp_service: gmail
+
+# Parameters for other than a well-known STMP service provider.
+# Host name providing the SMTP service.
+midas_smtp_hostname: localhost
+
+# Whether the SMTP connection is encrypted.
+midas_smtp_secure_connection: true
+
+# Communication port to use for connection to the SMTP service.
+# Typically 25 for unencrypted connections or 465 for encrypted connections.
+midas_smtp_port: 25
+
+# Authentication parameters for the SMTP service.
+# Leave undefined if authentication is not needed.
+#midas_smtp_user:
+#midas_smtp_password:
+
+# Whether to ignore the SMTP service provider STARTTLS support.
+midas_smtp_ignore_tls: false
+
+# Whether to also send generated messages to the node.JS console.
+midas_smtp_debug: false
+
+# Maximum connections to the SMTP server.
+midas_smtp_max_connections: 5
+
+# Maximum number of messages to send through a connection.
+# Leave undefined to set no upper limit.
+#midas_smtp_max_messages:
+
+# Whether to use DomainKeys Identified Mail in sending messages.
+midas_dkim_enabled: False
+
+# DKIM parameters
+#midas_dkim_domain: "kreata.ee"
+#midas_dkim_key_selector: "dkim"
+#midas_dkim_header_field_names:
+
+# E-mail from address to use in constructing messages.
+midas_from_address: 'donotreply@gsa.gov'
+
+# Use the midas_ses_... variables if using SES.
+midas_ses_url: https://email.us-east-1.amazonaws.com
+
+# The operating mode for the node.JS components. Affects the logging level.
+# Can be overridden at runtime by environment variable NODE-ENV.
+# Either 'development' or 'production'.
+midas_node_environment: development
+
+# The following variables are described here but are expected to actually be
+# set in a higher level variables file, since they will likely need to be used
+# in more than just the apptier role.
+# Communication protocol the application uses. Used to construct URLs.
+# Either 'http" or 'https'.
+#midas_http_protocol: http
+
+# The hostname on which the application runs.
+#midas_app_hostname: localhost
+
+# Communication port used by the application.
+# Defaults to 1337 for development. Probably change to 80 or 443 (https) for production.
+# Can be overridden at runtime with the PORT environment variable.
+#midas_app_port: 1337
+
+# The URL to reach the application through its web interface.
+#midas_app_url: "localhost:1337"
+
+# URL with protocol.
+#midas_app_full_url: "{{ midas_http_protocol }}://{{ midas_app_url }}"
+
+# Set defaults for the database.
+#midas_database_name: midas
+#midas_database_user: midas
+

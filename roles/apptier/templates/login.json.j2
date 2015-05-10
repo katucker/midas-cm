@@ -1,0 +1,63 @@
+{
+{% if midas_signin is defined and midas_signin %}
+  "signin": true,
+{% else %}
+  "signin": false,
+{% endif %}
+  "oauth": [
+    "linkedin",
+    "myusa"
+  ],
+  "config": {
+    "linkedin": {
+      "name": "LinkedIn",
+      "image": "/images/login/linkedin.png",
+      "endpoint": "/api/auth/oauth/linkedin",
+      "params": {"scope": ["r_basicprofile", "r_fullprofile", "r_emailaddress", "r_network"]}
+    },
+    "myusa": {
+      "name": "MyUSA",
+      "image": "/images/login/myusa.png",
+      "endpoint": "/api/auth/oauth/myusa",
+      "params": { "scope": ["profile.email", "profile.first_name", "profile.last_name"] }
+    }
+  },
+  "local": {
+{% if midas_local_auth_enabled is defined and midas_local_auth_enabled %}
+    "enabled": true,
+{% else %}
+    "enabled": false,
+{% endif %}
+{% if midas_local_auth_expand is defined and midas_local_auth_expand %}
+    "expand": true,
+{% else %}
+    "expand": false,
+{% endif %}
+{% if midas_local_auth_allow_logout is defined and midas_local_auth_allow_logout %}
+    "logout": true
+{% else %}
+    "logout": false
+{% endif %}
+  },
+  "terms": {
+{% if midas_link_to_terms is defined and midas_link_to_terms %}
+    "enabled": true,
+{% else %}
+    "enabled": false,
+{% endif %}
+    "name": "{{ midas_terms_label }}",
+    "link": "{{ midas_terms_url }}"
+  },
+  "profile": {
+{% if midas_profile_edit is defined and midas_profile_edit %}
+    "edit": true,
+{% else %}
+    "edit": false,
+{% endif %}
+{% if midas_profile_edit_url is defined %}
+    "editUrl": "{{ midas_profile_edit_url }}"
+{% else %}
+    "editUrl": null
+{% endif %}
+  }
+}

@@ -1,0 +1,124 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Install supporting packages for Debian
+  apt: pkg={{ item }} update_cache=yes cache_valid_time=3600 state=present
+  sudo: True
+  with_items:
+    - python-software-properties
+    - python
+    - g++
+    - make
+    - git
+    - graphicsmagick
+  when: ansible_os_family == "Debian"
+
+- name: Add apt repository for node.js on Debian
+  apt_repository: repo=ppa:chris-lea/node.js state=present
+  sudo: True
+  when: ansible_os_family == "Debian"
+      
+- name: Install node.js
+  apt: pkg=nodejs state=present
+  sudo: True
+  when: ansible_os_family == "Debian"
+      
+- name: Install supporting packages on RedHat
+  yum: name={{ item }} state=present
+  sudo: True
+  with_items:
+    - python-devel
+    - gcc-c++
+    - make
+    - git
+    - ImageMagick
+    - ImageMagick-devel
+  when: ansible_os_family == "RedHat"
+
+- name: Install latest version of  EPEL repository on RedHat
+  yum: name=epel-release state=present
+  sudo: True
+  when: ansible_os_family == "RedHat"
+  
+- name: Install npm on RedHat
+  yum: name=npm state=present
+  sudo: True
+  when: ansible_os_family == "RedHat"
+
+- name : Create account for running application
+  user: name={{ midas_install_user }} state=present
+  sudo: True
+        
+- name: Install global node modules
+  npm: name={{ item }} global=yes
+  sudo: True
+  with_items:
+    - grunt-cli
+    - forever
+
+- name: Install application code
+  git: repo={{ midas_repo_url }} dest={{ midas_dest_folder }} recursive=yes clone=yes update=no
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+      
+- name: Install the node.JS modules the application needs
+  npm: path={{ midas_dest_folder }} production={{ midas_production }}
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+      
+- name: Set the application client-side login configuration
+  template: src=login.json.j2 dest={{ midas_dest_folder }}/assets/js/backbone/config/login.json
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+            
+- name: Set the application client-side user interface configuration
+  template: src=ui.json.j2 dest={{ midas_dest_folder }}/assets/js/backbone/config/ui.json
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+            
+- name: Set the application client-side tags.
+  template: src=tag.js.j2 dest={{ midas_dest_folder }}/assets/js/backbone/config/tag.js
+  when: midas_set_tags
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+      
+- name: Set the application configuration file.
+  template: src=application.js.j2 dest={{ midas_dest_folder }}/config/application.js
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+            
+- name: Set the connections configuration file.
+  template: src=connections.js.j2 dest={{ midas_dest_folder }}/config/connections.js
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+            
+- name: Set the e-mail configuration file.
+  template: src=email.js.j2 dest={{ midas_dest_folder }}/config/email.js
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+            
+- name: Set the internationalization configuration file.
+  template: src=i18n.json.j2 dest={{ midas_dest_folder }}/config/i18n.json
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+            
+- name: Migrate the database schema.
+  command: npm run migrate chdir={{ midas_dest_folder }}
+  environment:
+    PGHOST: "{{ midas_database_hostname }}"
+    PGPASSWORD: "{{ midas_database_password }}"
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+  
+- name: Initialize the database contents.
+  command: npm run init chdir={{ midas_dest_folder }}
+  environment:
+    PGHOST: "{{ midas_database_hostname }}"
+    PGPASSWORD: "{{ midas_database_password }}"
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"
+  ignore_errors: True
+  
+- name: Start the application.
+  command: forever start app.js --pidFile {{ midas_pid }} chdir={{ midas_dest_folder }} creates={{ midas_pid }}
+  sudo: True
+  sudo_user: "{{ midas_install_user }}"

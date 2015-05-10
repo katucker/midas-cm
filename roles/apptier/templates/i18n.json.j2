@@ -1,0 +1,19 @@
+{
+  "resGetPath"      : "/locales/__lng__/__ns__.json",
+
+  "lng"             : "en-US",
+
+  "fallbackLng"     : "en",
+
+{% if midas_i18n_use_local_storage is defined and midas_i18n_use_local_storage %}
+  "useLocalStorage" : true,
+{% else %}
+  "useLocalStorage" : false,
+{% endif %}
+{% if midas_i18n_send_missing is defined and midas_i18n_send_missing %}
+  "sendMissing"     : true,
+{% else %}
+  "sendMissing"     : false,
+{% endif %}
+  "sendMissingTo"   : "current"
+}

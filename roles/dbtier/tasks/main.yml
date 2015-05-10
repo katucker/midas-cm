@@ -1,0 +1,27 @@
+#!/usr/bin/env ansible-playbook
+---
+# Fix a potential problem with the /etc/sudoers file
+# that prevents running sudo as the postgres user.
+- name: Verify sudoers allows running as postgres
+  lineinfile: "dest=/etc/sudoers state=present regexp='^%wheel' line='%wheel ALL=(ALL) NOPASSWD: ALL'"
+  sudo: True
+
+# Note this differs from the installation instructions for midas, which
+# creates the database first, creates the user, assigns all privileges on
+# the database to the user and gives ownership of the PUBLIC schema
+# to the user. This approach creates the user, then creates a database for
+# the user. This approach should work in environments in which more than
+# one database is used on the same database server.
+- name: Create application user within the database environment.
+  postgresql_user:
+    name: "{{ database_user }}"
+    password: "{{ database_password }}"
+  sudo: True
+  sudo_user: postgres
+  
+- name: Create the application database.
+  postgresql_db:
+    name: "{{ database_name }}"
+    owner: "{{ database_user }}"
+  sudo: True
+  sudo_user: postgres  

@@ -1,0 +1,33 @@
+{
+  "project": {
+{% if midas_show_project is defined and midas_show_project %}
+    "show": true
+{% else %}
+    "show": false
+{% endif %}
+  },
+  "supervisorEmail": {
+{% if midas_email_supervisor is defined and midas_email_supervisor %}
+	  "useSupervisorEmail": true
+{% else %}
+	  "useSupervisorEmail": false
+{% endif %}
+  },
+  "home": {
+    "logged_in_path": "{{ midas_logged_in_path }}"
+  },
+  "faq" : {
+{% if midas_show_faq is defined and midas_show_faq %}
+    "show" : true,
+{% else %}
+    "show" : false,
+{% endif %}
+    "url"  : "{{ midas_faq_path }}"
+  },
+  "systemEmail" : "{{ midas_from_address }}",
+  "browse": {
+    "pageSize" : 27,
+    "useInfiniteScroll" : false
+  },
+  "states" : [{"value": "draft","label":"Draft"},{"value": "open","label":"Open"},{"value":"assigned","label":"Assigned"},{"value": "completed","label":"Completed"},{"value":"archived","label":"Archived"}]
+}

@@ -1,0 +1,45 @@
+---
+# Determines whether only the production node.JS modules are installed.
+# Set to False for a development configuration.
+midas_production: False
+
+# The hostname of the webserver front end.
+midas_web_hostname: localhost
+
+# The port the web server uses for communication.
+midas_web_port: 80
+
+# Determines the mode in which the nodeJS application runs.
+# Either development or production
+midas_node_environment: development
+
+# The hostname of the server housing the database.
+midas_database_hostname: localhost
+
+# The name of the database to use.
+midas_database_name: midas
+
+# The user name that owns the database.
+midas_database_user: midas
+
+# The hostname of the server running the nodeJS application.
+midas_app_hostname: localhost
+
+# The port the nodeJS application uses for the web interface.
+midas_app_port: 1337
+
+# Communication protocol the application uses. Used to construct URLs.
+# Either 'http" or 'https'.
+midas_http_protocol: http
+
+# The URL path to reach the application through its web interface.
+midas_app_url: "localhost:1337"
+
+# URL with protocol.
+midas_app_full_url: "{{ midas_http_protocol }}://{{ midas_app_url }}"
+
+# Set the postgresql role variables common to the dbtier and apptier
+postgresql_flavor: pgdg
+postgresql_version: 9.3
+
+

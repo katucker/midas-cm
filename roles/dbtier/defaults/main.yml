@@ -1,0 +1,8 @@
+---
+# Defaults for the dbtier role.
+
+# Variables that must be passed to the role.
+# database_name
+# database_user
+# database_password
+# application_host

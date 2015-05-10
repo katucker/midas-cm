@@ -1,0 +1,51 @@
+#!/usr/bin/env ansible-playbook
+---
+# Top-level Ansible playbook for configuring the midas application.
+#
+# This playbook depends on some roles.
+# Those roles must be installed locally by running the following command:
+#  ansible-galaxy install -r requirements.yml
+
+# Uses the Ansible Galaxy jdauphant.nginx role to configure the web servers.
+- name: Configure web server
+  hosts: webservers
+  roles:
+    - role: jdauphant.nginx
+      sudo: True
+      nginx_sites:
+        default:
+          - listen {{ midas_web_port }}
+          - location / { 
+              proxy_pass {{ midas_app_full_url }};
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+              proxy_hide_header X-Powered-By;
+            }
+      nginx_configs:
+        gzip:
+          - gzip on
+          - gzip_disable msie6
+          - gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/javascript text/x-js
+          - gzip_min_length 1000
+          - gzip_vary on
+        header:
+          - add_header X-Frame-Options DENY
+
+- name: Configure database server
+  hosts: dbservers
+  vars_files:
+    - secrets.yml
+  roles: 
+    - role: dbtier
+      database_name: "{{ midas_database_name }}"
+      database_user: "{{ midas_database_user }}"
+      database_password: "{{ midas_database_password }}"
+      application_hostname: "{{ midas_app_hostname }}"
+
+- name: Configure application server
+  hosts: appservers
+  vars_files:
+    - secrets.yml
+  roles:
+    - role: apptier
+

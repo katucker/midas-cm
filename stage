@@ -1,0 +1,19 @@
+# Stage inventory file for Ansible.
+
+[vagrant]
+vagrant1 ansible_ssh_host=192.168.33.10 ansible_ssh_port=22
+
+[appservers:children]
+vagrant
+
+[dbservers:children]
+vagrant
+
+[webservers:children]
+vagrant
+
+[stage:children]
+appservers
+dbservers
+webservers
+

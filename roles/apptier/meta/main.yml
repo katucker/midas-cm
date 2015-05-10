@@ -1,0 +1,14 @@
+---
+# Having the apptier role depend on the postgresql role
+# ensures the proper version of PostgreSQL development
+# files are installed.
+# The postgresql role takes care of the complexity of installing
+# the desired PostgreSQL repository version on the server, regardless
+# of whether that server is running a Debian or RedHat distribution OS.
+dependencies:
+- role: postgresql
+  sudo: True
+  postgresql_server: False
+  postgresql_devel: True
+
+

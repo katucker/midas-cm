@@ -1,0 +1,9 @@
+# Handlers for the dbtier role
+---
+- name: restart redhat_postgresql
+  service: name=postgresql-9.3 state=restarted
+  sudo: True
+  
+- name: restart debian_postgresql
+  service: name=postgresql state=restarted
+  sudo: True

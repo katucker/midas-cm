@@ -1,0 +1,46 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Organize plays by OS
+  hosts: default
+  gather_facts: True
+  sudo: True
+  tasks:
+   - name: Group by Operating System
+     group_by: key=os_{{ ansible_distribution }} 
+
+- name: Configure web server on Unbuntu
+  hosts: os_Ubuntu
+  tasks:
+    -name: Install repository containing nginx
+      apt_repository: repo = 'ppa:nginx/stable' state=present
+      sudo: True
+
+    -name: Install nginx
+      apt: pkg = 'nginx' state=present
+      sudo: True
+      
+- name: Configure web server on CentOS
+  hosts: os_CentOS
+  tasks:
+
+    - name: Install bootstrap for EPEL repository
+      copy: src=roles/apptier/files/bootstrap-epel.repo
+            dest=/etc/yum.repos.d/
+            owner=root group=root mode=0644
+      sudo: True
+
+    - name: Install EPEL repository
+      yum: name=epel
+           enablerepo=bootstrap-epel
+      sudo: True
+
+    - name: Enable EPEL repository
+      ini_file: dest=/etc/yum.repos.d/epel.repo
+                section=epel
+                option=enabled
+                value=1
+      sudo: True
+
+    - name: Install nodeJS
+      yum: name= nodejs
+      sudo: True
